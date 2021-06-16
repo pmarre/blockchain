@@ -14,7 +14,7 @@ class Worker extends Thread {
         PrintStream out = null;
         BufferedReader in = null;
         try {
-            in = new BufferedReader (new InputStreamReader(sock.getOutputStream()));
+            in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
             out = new PrintStream(sock.getOutputStream());
             try {
                 String name;
@@ -26,9 +26,10 @@ class Worker extends Thread {
                 x.printStackTrace();
             }
             sock.close();
-            catch(IOException ioe) {System.out.println(ioe);}
-            }
+        } catch (IOException ioe) {
+            System.out.println(ioe);
         }
+    }
 
     static void printRemoteAddress(String name, PrintStream out) {
         try {
