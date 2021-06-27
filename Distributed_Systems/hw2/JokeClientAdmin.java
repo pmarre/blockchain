@@ -1,31 +1,57 @@
-package Distributed_Systems.hw2.JokeServer.src;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
 
-public class JokeClient {
+public class JokeClientAdmin {
+
     public static void main(String args[]) {
         String serverName;
+        String current_mode = "joke";
         if (args.length < 1) // if command line args are less than 1, servername = localhost
             serverName = "localhost";
         else
             serverName = args[0]; // else servername is the first command line arg
 
-        System.out.println("Patrick Marre's Inet Client, v1.1.\n");
-        System.out.println("Using server: " + serverName + ", Port: 1565");
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in)); // create input buffer
+
         try {
+            JokeClientAdmin jokes = new JokeClientAdmin();
             String name;
+            String mode;
+            System.out.print("Enter your username, (quit) to end: ");
+            System.out.flush();
+            name = in.readLine();
+            int j_count = 0;
+            int p_count = 0;
             do { // while user does not type quit do the following
-                System.out.print("Enter a host name or IP address, (quit) to end: ");
+
+                System.out.print("Would you like a joke or proverb?, (quit) to end: ");
                 System.out.flush();
-                name = in.readLine();
-                if (name.indexOf("quit") < 0)
-                    getRemoteAddress(name, serverName); // get the remote address of the input from the user
-            } while (name.indexOf("quit") < 0);
+                mode = in.readLine();
+                if (name.indexOf("quit") < 0) {
+                    if (mode.indexOf("quit") < 0) {
+                        if (mode.equals("joke")) {
+                            setState(name, mode, serverName, j_count); // get the remote address of the input
+                                                                       // from the
+                                                                       // user
+                            if (j_count == 3)
+                                j_count = 0;
+                            else
+                                j_count++;
+                        } else if (mode.equals("proverb")) {
+                            setState(name, mode, serverName, p_count); // get the remote address of the input
+                                                                       // from the
+                            // user
+                            if (p_count == 3)
+                                p_count = 0;
+                            else
+                                p_count++;
+                        }
+                    }
+                }
+            } while (name.indexOf("quit") < 0 || mode.indexOf("quit") < 0);
             System.out.println("Cancelled by user request.");
         } catch (IOException x) { // if error print error
             x.printStackTrace();
@@ -42,7 +68,7 @@ public class JokeClient {
         return result.toString();
     }
 
-    static void getRemoteAddress(String name, String serverName) {
+    static void setState(String name, String mode, String serverName, int count) {
         Socket sock;
         BufferedReader fromServer;
         PrintStream toServer;
@@ -52,6 +78,9 @@ public class JokeClient {
             fromServer = new BufferedReader(new InputStreamReader(sock.getInputStream())); // read from the buffer input
             toServer = new PrintStream(sock.getOutputStream()); // print to the out stream from the socket
             toServer.println(name);
+            toServer.println(count);
+            toServer.println(mode);
+
             toServer.flush();
 
             for (int i = 1; i <= 3; i++) { // print 3 lines from the information that is returned from the server
