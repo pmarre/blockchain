@@ -21,8 +21,9 @@ In separate shell windows:
 
 5. Files needed for running the program.
 
- 1. MiniWebserverChecklist.html
+ 1. MiniWebChecklist.html
  2. MiniWebserver.java
+ 3. WebAdd.html
 
 5. Notes:
 
@@ -160,18 +161,18 @@ public class MiniWebserver {
     static int i = 0;
 
     public static void main(String args[]) throws IOException {
-        int q_len = 6;
-        int port = 2540;
-        Socket sock;
+        int q_len = 6; // Client queue length
+        int port = 2540; // Hard coded Port (required by class to be at port 2540)
+        Socket sock; // Initialize sock
 
-        ServerSocket ss = new ServerSocket(port, q_len);
+        ServerSocket ss = new ServerSocket(port, q_len); // Create new serversocket with port and queue length
 
         System.out.println("Patrick Marre's MiniWebserver running at " + port + ".");
         System.out.println("Point Firefox browser to http://localhost:2540/abc.\n");
 
         while (true) {
-            sock = ss.accept();
-            new AWorker(sock).start();
+            sock = ss.accept(); // Wait for server/client to connect
+            new AWorker(sock).start(); // start up a new thread
         }
     }
 }

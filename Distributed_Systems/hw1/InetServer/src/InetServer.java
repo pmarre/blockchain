@@ -20,9 +20,16 @@ class Worker extends Thread { // Worker constructor
             try {
                 String name; // init name
                 name = in.readLine(); // from in, read one line at a time
+                if (name.equals("joke")) {
+                    System.out.println("Looking for a joke.");
+                    printJoke(name, out);
+                } else if (name.equals("proverb")) {
+                    System.out.println("Looking for a proverb");
+                    printProverb(name, out);
+                }
                 System.out.println("Looking up " + name);
-                printRemoteAddress(name, out); // pass name and out to printRemoteAddress, prints the returned
-                                               // information to the client
+                // pass name and out to printRemoteAddress, prints the returned
+                // information to the client
             } catch (IOException x) { // if error, print error
                 System.out.println("Server read error");
                 x.printStackTrace();
@@ -33,16 +40,25 @@ class Worker extends Thread { // Worker constructor
         }
     }
 
-    static void printRemoteAddress(String name, PrintStream out) {
+    static void printJoke(String name, PrintStream out) {
         // function is for printing the information received from the server to the the
         // client
         try {
             out.println("Looking up " + name + "...");
-            InetAddress machine = InetAddress.getByName(name); // gets IP address by the name passed to function
-            out.println("Host name: " + machine.getHostName()); // gets host name by IP address
-            out.println("Host IP: " + toText(machine.getAddress())); // get IP address
-        } catch (UnknownHostException ex) {
-            out.println("Failed in attempt to look up " + name);
+            out.println("Why did the chicken cross the road?");
+
+        } finally { // THIS SHOULD BE CHANGED
+        }
+    }
+
+    static void printProverb(String name, PrintStream out) {
+        // function is for printing the information received from the server to the the
+        // client
+        try {
+            out.println("Looking up " + name + "...");
+            out.println("May the force be with you.");
+
+        } finally { // THIS SHOULD BE CHANGED
         }
     }
 
