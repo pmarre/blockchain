@@ -31,7 +31,12 @@ You will need to download gson-2.8.2.jar into your classpath / compiling directo
 To compile and run:
 
 javac -cp "gson-2.8.2.jar" BlockJ.java
+
+if Windows
 java -cp ".;gson-2.8.2.jar" BlockJ
+
+if UNIX/LINUX
+java -cp ".:gson-2.8.2.jar" BlockJ
 
 -----------------------------------------------------------------------------------------------------*/
 import java.io.StringWriter;
@@ -52,7 +57,7 @@ import java.io.IOException;
 import java.io.FileReader;
 import java.io.Reader;
 
-class BlockRecord {
+class BlockRecord2 {
     String BlockID;
     String VerificationProcessID;
     String PreviousHash;
@@ -105,6 +110,7 @@ class BlockRecord {
 
     public String getWinningHash() {return WinningHash;}
     public void setWinningHash(String WH){this.WinningHash = WH;}
+
 
 
 }
@@ -188,24 +194,46 @@ public class BlockJ {
         verified = verifySig(SHA256String.getBytes(), keyPair.getPublic(), testSignature);
         System.out.println("Has the restored signature been verified: " + verified + "\n");
 
+    /* In this section we show that the public key can be converted into a string suitable
+       for marshaling in XML or JSON to a remote machine, but then converted back into usable public
+       key. Then, just for added assurance, we show that if we alter the string, we can
+       convert it back to a workable public key in the right format, but it fails our
+       verification test. */
+
         byte[] bytePubkey = keyPair.getPublic().getEncoded();
         System.out.println("Key in Byte[] form: " + bytePubkey);
 
         String stringKey = Base64.getEncoder().encodeToString(bytePubkey);
         System.out.println("Key in String form: " + stringKey);
 
-        byte[] bytePubkey2 = Base64.getDecoder().decode(stringKey);
-        System.out.println("Key in Byte form again: " + bytePubkey2);
+        String stringKeyBad = stringKey.substring(0,50) + "M" + stringKey.substring(51);
+        System.out.println("\nBad key in String form: " + stringKeyBad);
+
+        // Convert the string to a byte[]:
+
+        byte[] bytePubkey2  = Base64.getDecoder().decode(stringKey);
+        System.out.println("Key in Byte[] form again: " + bytePubkey2);
 
         X509EncodedKeySpec pubSpec = new X509EncodedKeySpec(bytePubkey2);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        PublicKey RestoredKeyBad = keyFactory.generatePublic(pubSpec);
+        PublicKey RestoredKey = keyFactory.generatePublic(pubSpec);
 
         verified = verifySig(SHA256String.getBytes(), keyPair.getPublic(), testSignature);
         System.out.println("Has the signature been verified: " + verified + "\n");
 
+        verified = verifySig(SHA256String.getBytes(), RestoredKey, testSignature);
+        System.out.println("Has the CONVERTED-FROM-STRING signature been verified: " + verified + "\n");
+
+        // Convert the bad string to a byte[]:
+        byte[] bytePubkeyBad  = Base64.getDecoder().decode(stringKeyBad);
+        System.out.println("Damaged key in Byte[] form: " + bytePubkeyBad);
+
+        X509EncodedKeySpec pubSpecBad = new X509EncodedKeySpec(bytePubkeyBad);
+        KeyFactory keyFactoryBad = KeyFactory.getInstance("RSA");
+        PublicKey RestoredKeyBad = keyFactoryBad.generatePublic(pubSpecBad);
+
         verified = verifySig(SHA256String.getBytes(), RestoredKeyBad, testSignature);
-        System.out.println("has the CONVERTED-FROM-STRING bad key signature been verified: " + verified + "\n");
+        System.out.println("Has the CONVERTED-FROM-STRING bad key signature been verified: " + verified + "\n");
 
         System.out.println("We will now simulate some work: ");
         int randval = 27;
@@ -293,7 +321,7 @@ public class BlockJ {
         System.out.println("Unique Block ID: " + suuid + "\n");
 
         // Create new instance of blockRecord
-        BlockRecord blockRecord = new BlockRecord();
+        BlockRecord2 blockRecord = new BlockRecord2();
         blockRecord.setVerificationProcessID("Process2");
         blockRecord.setBlockID(suuid);
         blockRecord.setUUID(BinaryUUID); // Later will show JSON translation from binary to string form.
@@ -372,7 +400,7 @@ public class BlockJ {
         try (Reader reader = new FileReader("blockRecord.json")) {
 
             // Read and convert JSON File to a Java Object:
-            BlockRecord blockRecordIn = gson.fromJson(reader, BlockRecord.class);
+            BlockRecord2 blockRecordIn = gson.fromJson(reader, BlockRecord2.class);
 
             // Print the blockRecord:
             System.out.println(blockRecordIn);
