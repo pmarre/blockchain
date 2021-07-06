@@ -1,0 +1,132 @@
+
+<html>
+    <head> <title> Wireshark Checklist </title>
+    </head>
+    <body>
+    
+    <FONT FACE="Cambria" SIZE=1>
+    2.1
+    <br>
+    Updates:
+    <ol>
+    <li> none
+    </ol>
+    
+    
+    <FONT FACE="Cambria" SIZE=4>
+    <center> <h2> WireShark Checklist </h2> </center> <p>
+    
+    <br> 
+    
+    Change "No" to "Yes" as you complete the tasks. Submit to D2L when complete:<p>
+    
+    <table border=1 width="50%" >
+    
+    <tr><td align="Left"><b> <FONT FACE="Cambria" SIZE=5>Task
+    </font></b></td>
+    <td align="Left"><b><FONT FACE="Cambria" SIZE=5> Complete? </task> 
+    </b></td></tr>
+    
+    <tr> <td align="left"><b>
+    My name is...
+    </b></td><td align="left"><b>
+    Patrick Marre                 </b></td></tr>
+    
+    <tr> <td align="left"><b>
+    I have installed and run WireShark
+    </b></td><td align="left"><b>
+    Yes                    </b></td></tr>
+    
+    <tr> <td align="left"><b>
+    I have completed the Intro lab</b></td><td align="left"><b>
+    Yes                    </b></td></tr>
+    
+    <tr> <td align="left"><b>
+    I have completed the IP lab
+    </b></td><td align="left"><b>
+    Yes                    </b></td></tr>
+    
+    <tr> <td align="left"><b>
+    I have completed the DNS lab
+    </b></td><td align="left"><b>
+    Yes                    </b></td></tr>
+    
+    <tr> <td align="left"><b>
+    I have completed the HTTP lab
+    </b></td><td align="left"><b>
+    Yes                    </b></td></tr>
+    
+    <tr> <td align="left"><b>
+    I have completed the TCP lab
+    </b></td><td align="left"><b>
+    Yes                    </b></td></tr>
+    
+    <tr> <td align="left"><b>
+    I have completed the UDP lab
+    </b></td><td align="left"><b>
+    Yes                    </b></td></tr>
+    
+    <tr> <td align="left"><b>
+    I have completed the SSL lab
+    </b></td><td align="left"><b>
+    Yes                    </b></td></tr>
+    
+    <tr> <td align="left"><b>
+    I have inserted my one-page write-up into the bottom of the checklist.
+    </b></td><td align="left"><b>
+    Yes          </b></td></tr>
+    
+    <tr> <td align="left"><b>
+    I will have submitted this checklist to D2L
+    </b></td><td align="left"><b>
+    Yes          </b></td></tr>
+    
+    <tr> <td align="left"><b>
+    Bragging Rights Below ---------------------
+    </b></td><td align="left"><b>
+    This Line          </b></td></tr>
+    
+    <tr> <td align="left"><b>
+    I did something cool and posted it at the discussion forum
+    </b></td><td align="left"><b>
+    No          </b></td></tr>
+    
+    </table>
+    
+    <h3> My One Page Writeup: </h3>
+    
+       <h4>Lab 1: Intro</h4>
+       <p>
+        In lab one, I set up Wireshark and walked through all the main features that will be needed throughout the labs. I then started up Chrome and began capturing packets and redirected Chrome to the gaia.cs link provided in the lab to see how this changed the packets. I played around with the filter and used it to filter by “http” to show all the HTTP messages. I used the information from the messages to answer the lab questions. 
+        </p>
+        <h4>Lab 2: IP</h4>
+        <p>
+        In lab two I started up Wireshark and practiced using the traceroute command to send UDP datagrams to an address. Since I am running a UNIX machine, I did not need to use pingplotter and instead ran the command “traceroute” three times with various sizes. After entering the command I looked at the UDP segment sent by my computer and pulled up the packet summary to answer the questions to the lab. 
+        </p>
+        <h4>Lab 3: DNS Lookup</h4>
+        <p>
+        In lab three, I used “nslookup” in the command line to retrieve a DNS record from the server. I first played around with the command by looking up condor.depaul.edu and retrieved the attached record. I then continued through the lab and began searching for DNS records in different formats, including by web address, using the -type flag, and by using two addresses to override the default. Next, I ran ifconfig (UNIX command) to show the TCP/IP information. I then emptied my DNS cache and used Wireshark to retrieve the packets from www.ietf.org. The retrieved information was then used to answer all the questions. 
+        </p>
+
+        <h4>Lab 4: HTTP Lab</h4>
+        <p>
+        In lab four, I opened up the supplied link while running the Wireshark packet capture feature with a filter to only show HTTP protocols. I then used the information from the HTTP GET and response message to answer the first 7 questions. Next I looked at how to retrieve large files and saw how bytes get broken up into multiple TCP packets when the file is too large to fit in one. Next, I looked at how embedded items (e.g. images, videos) are retrieved by accessing the html link in the original HTML file. Finally, I took a look at HTML Authentication. This showed a basic login page and how HTML GET works with authorization. This example uses Base64 to encode the username and password. Once all steps were complete, I answered all questions. 
+        </p>
+
+        <h4>Lab 5: TCP</h4>
+
+        <p>In lab five, I uploaded the Alice in Wonderland text to the website provided and traced it with Wireshark. I then filtered messages by “tcp” and viewed the messages to see how the packets were being sent over. I used this information to answer questions 1-3. Then I moved onto TCP Basics where I answered questions 4-12. Next I used Wiresharks TCP graphing utility to look at the amount of data being sent over from the client to the server. I then used this information to answer the last 2 questions. 
+        </p>
+
+        <h4>Lab 6: UDP</h4>
+
+        <p>In lab six, I looked at UDP by starting up Wireshark and started receiving UDP packets immediately (I had a number of apps and web pages open). I then expanded one of the UDP packets and answered the 7 questions in the lab. 
+        </p>
+
+        <h4>Lab 7: SSL</h4>
+
+        <p>For lab 7, to capture packets in an SSL session I went to Amazon.com and began checking out. I then filtered the Wireshark captures for “ssl” and used the information in the messages to answer all the lab questions.
+        </p>
+    
+    </body></html>
+    
