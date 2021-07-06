@@ -37,15 +37,36 @@ java -cp ".;gson-2.8.2.jar" BlockJ
 import java.io.StringWriter;
 import java.io.StringReader;
 
-import java.nio.charset.StandardCharsets;
-import java.security.*;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.*;
-import java.text.*;
+/* CDE: The encryption needed for signing the hash: */
+
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.security.Security;
+import java.security.Signature;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import javax.crypto.Cipher;
+import java.security.spec.*;
+// Ah, heck:
+import java.security.*;
 
-import com.google.gson.*;
+// Produces a 64-bye string representing 256 bits of the hash output. 4 bits per character
+import java.security.MessageDigest; // To produce the SHA-256 hash.
 
+/* CDE Some other uitilities: */
+
+import java.util.Date;
+import java.util.Random;
+import java.util.UUID;
+import java.text.*;
+import java.util.Base64;
+import java.util.Arrays;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -67,45 +88,109 @@ class BlockRecord {
     String RandomSeed;
     String WinningHash;
 
-    public String getBlockID() {return BlockID;}
-    public void setBlockID(String BID) {this.BlockID = BID;}
+    public String getBlockID() {
+        return BlockID;
+    }
 
-    public String getVerificationProcessID() {return VerificationProcessID;}
-    public void setVerificationProcessID(String VID) {this.VerificationProcessID = VID;}
+    public void setBlockID(String BID) {
+        this.BlockID = BID;
+    }
 
-    public String getPreviousHash(){return this.PreviousHash;}
-    public void setPreviousHash(String PH){this.PreviousHash = PH;}
+    public String getVerificationProcessID() {
+        return VerificationProcessID;
+    }
 
-    public UUID getUUID(){return uuid;}
-    public void setUUID(UUID ud){this.uuid = ud;}
+    public void setVerificationProcessID(String VID) {
+        this.VerificationProcessID = VID;
+    }
 
-    public String getLname() {return Lname;}
-    public void setLname(String LN){this.Lname = LN;}
+    public String getPreviousHash() {
+        return this.PreviousHash;
+    }
 
-    public String getFname(){return Fname;}
-    public void setFname(String FN) { this.Fname = FN;}
+    public void setPreviousHash(String PH) {
+        this.PreviousHash = PH;
+    }
 
-    public String getSSNum(){return SSNum;}
-    public void setSSNum(String SS) {this.SSNum = SS;}
+    public UUID getUUID() {
+        return uuid;
+    }
 
-    public String getDOB() {return DOB;}
-    public void setDOB(String RS) {this.DOB = RS;}
+    public void setUUID(UUID ud) {
+        this.uuid = ud;
+    }
 
-    public String getDiag() {return Diag;}
-    public void setDiag(String D) {this.Diag = D;}
+    public String getLname() {
+        return Lname;
+    }
 
-    public String getTreat(){return Treat;}
-    public void setTreat(String Tr){this.Treat = Tr;}
+    public void setLname(String LN) {
+        this.Lname = LN;
+    }
 
-    public String getRx(){return Rx;}
-    public void setRx(String Rx) {this.Rx = Rx;}
+    public String getFname() {
+        return Fname;
+    }
 
-    public String getRandomSeed() {return RandomSeed;}
-    public void setRandomSeed(String RS) {this.RandomSeed = RS;}
+    public void setFname(String FN) {
+        this.Fname = FN;
+    }
 
-    public String getWinningHash() {return WinningHash;}
-    public void setWinningHash(String WH){this.WinningHash = WH;}
+    public String getSSNum() {
+        return SSNum;
+    }
 
+    public void setSSNum(String SS) {
+        this.SSNum = SS;
+    }
+
+    public String getDOB() {
+        return DOB;
+    }
+
+    public void setDOB(String RS) {
+        this.DOB = RS;
+    }
+
+    public String getDiag() {
+        return Diag;
+    }
+
+    public void setDiag(String D) {
+        this.Diag = D;
+    }
+
+    public String getTreat() {
+        return Treat;
+    }
+
+    public void setTreat(String Tr) {
+        this.Treat = Tr;
+    }
+
+    public String getRx() {
+        return Rx;
+    }
+
+    public void setRx(String Rx) {
+        this.Rx = Rx;
+    }
+
+    public String getRandomSeed() {
+        return RandomSeed;
+    }
+
+    public void setRandomSeed(String RS) {
+        this.RandomSeed = RS;
+    }
+
+    public String getWinningHash() {
+        return WinningHash;
+    }
+
+    public void setWinningHash(String WH) {
+        this.WinningHash = WH;
+    }
 
 }
 
@@ -144,20 +229,26 @@ public class BlockJ {
         int UnverifiedBlockPort;
         int BlockChainPort;
 
-        if (args.length > 2) System.out.println("Special functionality is present \n");
+        if (args.length > 2)
+            System.out.println("Special functionality is present \n");
 
-        if (args.length < 1) pnum = 0;
-        else if (args[0].equals("0")) pnum = 0;
-        else if (args[0].equals("1")) pnum = 1;
-        else if (args[0].equals("2")) pnum = 2;
-        else pnum = 0;
+        if (args.length < 1)
+            pnum = 0;
+        else if (args[0].equals("0"))
+            pnum = 0;
+        else if (args[0].equals("1"))
+            pnum = 1;
+        else if (args[0].equals("2"))
+            pnum = 2;
+        else
+            pnum = 0;
         UnverifiedBlockPort = 4710 + pnum;
         BlockChainPort = 4810 + pnum;
 
         System.out.println("Process number: " + pnum + " Ports: " + UnverifiedBlockPort + " " + BlockChainPort + "\n");
 
         Date date = new Date();
-        // String T1 =  String.format("%1Ss %2$tF.%2$tT", "Timestamp:", date);
+        // String T1 = String.format("%1Ss %2$tF.%2$tT", "Timestamp:", date);
         String T1 = String.format("%1Ss %2$tF.%2$tT", "", date);
         String TimeStampString = T1 + "." + pnum + "\n"; // Unique process ID to avoid timestamp collisions
         System.out.println("Timestamp: " + TimeStampString);
@@ -286,8 +377,11 @@ public class BlockJ {
     public void WriteJSON() {
         System.out.println("=========> In WriteJSON <=========\n");
 
-        /* CDE: Example of generating a unique blockID. This would also be signed by creating process: */
-        // String suuid = UUID.randomUUID().toString();  // Can do this all at once...
+        /*
+         * CDE: Example of generating a unique blockID. This would also be signed by
+         * creating process:
+         */
+        // String suuid = UUID.randomUUID().toString(); // Can do this all at once...
         UUID BinaryUUID = UUID.randomUUID();
         String suuid = BinaryUUID.toString();
         System.out.println("Unique Block ID: " + suuid + "\n");
@@ -305,8 +399,9 @@ public class BlockJ {
         Random rr = new Random(); //
         int rval = rr.nextInt(16777215); // This is 0xFFFFFF -- YOU choose what the range is
 
-        // In real life you'll want these much longer. Using 6 chars to make debugging easier.
-        String randSeed = String.format("%06X", rval & 0x0FFFFFF);  // Mask off all but trailing 6 chars.
+        // In real life you'll want these much longer. Using 6 chars to make debugging
+        // easier.
+        String randSeed = String.format("%06X", rval & 0x0FFFFFF); // Mask off all but trailing 6 chars.
         rval = rr.nextInt(16777215);
         String randSeed2 = Integer.toHexString(rval);
         System.out.println("Our string random seed is: " + randSeed + ". Wait, I mean it is: " + randSeed2 + "\n");
@@ -314,15 +409,9 @@ public class BlockJ {
         blockRecord.setRandomSeed(randSeed2);
 
         String catRecord = // "Get a string of the block so we can hash it.
-                blockRecord.getBlockID() +
-                        blockRecord.getVerificationProcessID() +
-                        blockRecord.getPreviousHash() +
-                        blockRecord.getFname() +
-                        blockRecord.getLname() +
-                        blockRecord.getSSNum() +
-                        blockRecord.getRx() +
-                        blockRecord.getDOB() +
-                        blockRecord.getRandomSeed();
+                blockRecord.getBlockID() + blockRecord.getVerificationProcessID() + blockRecord.getPreviousHash()
+                        + blockRecord.getFname() + blockRecord.getLname() + blockRecord.getSSNum() + blockRecord.getRx()
+                        + blockRecord.getDOB() + blockRecord.getRandomSeed();
 
         System.out.println("String blockRecord is: " + catRecord);
 
@@ -386,7 +475,3 @@ public class BlockJ {
         }
     }
 }
-
-
-
-
