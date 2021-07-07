@@ -3,11 +3,10 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.FileReader;
-import java.io.Reader;
+import java.io.*;
 
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.security.*;
 import java.util.*;
 /* import java.util.Date;
@@ -16,10 +15,9 @@ import java.util.*;
    import java.util.StringTokenizer;
 */
 
-import java.io.StringWriter;
-import java.io.StringReader;
-import java.io.BufferedReader;
 import java.text.*;
+import java.util.concurrent.BlockingQueue;
+
 
 class BuildBlock {
     String BlockID;
@@ -58,14 +56,21 @@ class BuildBlock {
     public void setBlockNum(String blockNum){this.BlockNum = blockNum;}
 
     public Boolean isVerified() {return isVerified;}
-
-
-
 }
 
 
 
+
 public class Blockchain {
+    /* Token indexes for input: */
+    private static final int iFNAME = 0;
+    private static final int iLNAME = 1;
+    private static final int iDOB = 2;
+    private static final int iSSNUM = 3;
+    private static final int iDIAG = 4;
+    private static final int iTREAT = 5;
+    private static final int iRX = 6;
+    private static final PriorityQueue<BuildBlock> pq = new PriorityQueue<BuildBlock>();
     public static String CSC435Block = "You will design and build this dynamically. For now, this is just a string.";
 
     public static final String ALGORITHM = "RSA"; // NAME OF ENCRYPTION METHOD USED
@@ -92,27 +97,55 @@ public class Blockchain {
 
     public LinkedList<BuildBlock> ListBuilder(String argv[]) throws Exception {
         LinkedList<BuildBlock> block_chain = new LinkedList<BuildBlock>();
+        int pnum;
+        if (argv.length < 1) pnum = 0;
+        else if (argv[0].equals("0")) pnum = 0;
+        else if (argv[0].equals("1")) pnum = 1;
+        else if (argv[0].equals("2")) pnum = 2;
+        else pnum = 0;
+
+        String FILENAME;
+
+        switch(pnum) {
+            case 1: FILENAME = "BlockInput1.txt"; break;
+            case 2: FILENAME = "BlockInput2.txt"; break;
+            default: FILENAME = "BlockInput0.txt"; break;
+        }
 
         try{
+            BufferedReader buf_reader = new BufferedReader(new FileReader(FILENAME));
             String ssuid;
             UUID uuid;
             BuildBlock tempBuild = null;
+            String InputLine;
+            String[] tokens = new String[10];
 
-            int n = 0;
-            String names[] = {"DummyBlock", "John", "Jane", "Rick"};
-            while (n < 4) {
+
+
+            int n = 0;  // account for the dummyblock at start
+            //String names[] = {"DummyBlock", "John", "Jane", "Rick"};
+            while ((InputLine = buf_reader.readLine()) != null) {
                 BuildBlock BB = new BuildBlock();
                 try {Thread.sleep(1001);}catch(InterruptedException e){}
                 ssuid = new String(UUID.randomUUID().toString());
+                tokens = InputLine.split(" +");
                 BB.setBlockID(ssuid);
-                BB.setFname(names[n]);
+                BB.setFname(tokens[iFNAME]);
                 BB.setBlockNum(Integer.toString(n));
-
-                if (n == 0) {
-                    BB.setPreviousHash("000000000000");
+                if (n == 0 ){
+                    BB.setPreviousHash("0000000000000000000000");
                 } else {
                     BB.setPreviousHash(tempBuild.getCurrentHash());
                 }
+//                if (n == 0) {
+//                    BB.setFname("StarterBlock");
+//                    BB.setBlockNum(Integer.toString(n));
+//                    BB.setPreviousHash("000000000000000000000");
+//                } else {
+//                BB.setFname(tokens[iFNAME]);
+//                BB.setBlockNum(Integer.toString(n));
+//                BB.setPreviousHash(tempBuild.getCurrentHash());
+        //        }
                 BlockUtilities(BB);
                 tempBuild = BB;
                 System.out.println("\n<============ NEW BLOCK: " + BB.getBlockNum() + " ============>\n");
@@ -146,7 +179,6 @@ public class Blockchain {
         System.out.println("<========= In BlockUtilities =======>");
         int pnum;
         pnum = 0; // Temporarily fixed to value 0
-
         Date date = new Date();
         String time1 = String.format("%1Ss %2$tF.%2$tT", "", date);
         String t_stamp_str = time1 + "." + pnum + "\n";
@@ -186,9 +218,11 @@ public class Blockchain {
            block.setCurrentHash(SHA256String);
            System.out.println("Hexadecimal byte[] Representation of Original SHA256 Hash: " + SHA256String + "\n");
            WorkB work = new WorkB();
+          // pq.add(block);
            while(!(block.isVerified)) {
                work.runWork(block, str_cat);
            }
+           pq.remove(block);
 
     }
 
@@ -288,7 +322,7 @@ public class Blockchain {
                     // ...if so, then abandon this verification effort and start over.
                     // Here is where you will sleep if you want to extend the time up to a second or two.
                 }
-            }catch(Exception ex) {ex.printStackTrace();}
+            } catch(Exception ex) {ex.printStackTrace();}
 
 
         }
