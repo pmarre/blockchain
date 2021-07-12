@@ -233,7 +233,7 @@ class UnverifiedBlockConsumer implements Runnable {
 	   crude filter, which also may let some dups through */
                 // if(bc.blockchain.indexOf(data.substring(1, 9)) > 0){System.out.println("Duplicate: " + data);}
 
-                if(bc.blockchain.indexOf(data.substring(1, 9)) < 0){ // Crude, but excludes most duplicates.
+                if(bc.blockchain.indexOf(data.substring(1, 15)) < 0){ // Crude, but excludes most duplicates.
                     fakeVerifiedBlock = "[" + data + " verified by P" + bc.PID + " at time "
                             + Integer.toString(ThreadLocalRandom.current().nextInt(100,1000)) + "]\n";
                     // System.out.print("Fake verified block: " + fakeVerifiedBlock);

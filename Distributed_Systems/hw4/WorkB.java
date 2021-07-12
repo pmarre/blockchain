@@ -35,6 +35,8 @@ import java.security.MessageDigest;
 import java.util.Scanner;
 //import javax.xml.bind.DatatypeConverter;  Java 1.9 does not like this. War on XML!
 import java.util.Arrays;
+import java.util.*;
+import java.util.concurrent.*;
 
 public class WorkB {
 
